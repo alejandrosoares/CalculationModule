@@ -23,4 +23,8 @@ DF_COLS = [
     DF_COL_DATE,
     DF_COL_VALUE
 ]
+DF_CLEANED_COLS = [
+    DF_COL_DATE,
+    DF_COL_VALUE
+]
 
