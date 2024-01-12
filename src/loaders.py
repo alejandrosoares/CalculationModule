@@ -4,7 +4,9 @@ import dask.dataframe as dd
 from dask.dataframe.core import DataFrame
 
 from settings import (
-    MEMORY_SIZE,
+    DASK_MEMORY_SIZE,
+    DF_COLS,
+    DF_COL_NAME,
 )
 from utils import get_dataset_instruments_path, get_full_dataset_path
 from preprocessors import IPreprocessor
@@ -18,7 +20,7 @@ class Loader:
     """
     def __init__(self, 
         preprocessor: IPreprocessor, 
-        memory: str = MEMORY_SIZE,
+        memory: str = DASK_MEMORY_SIZE,
         recorder: IFileDataRecorder = None
     ):
         self.memory = memory
@@ -37,7 +39,7 @@ class Loader:
             dataset_path,
             blocksize=self.memory,
             header=None,
-            names=['instrument_name', 'date', 'value']
+            names=DF_COLS
         )
         return df
 
@@ -47,9 +49,9 @@ class Loader:
         self.recorder.record_data(df) 
 
     def _save_by_instrument(self, df:DataFrame) -> None:
-        instruments = df['instrument_name'].unique().compute().tolist()
+        instruments = df[DF_COL_NAME].unique().compute().tolist()
         for instrument in instruments:
-            df_instrument = df[df['instrument_name'] == instrument]
+            df_instrument = df[df[DF_COL_NAME] == instrument]
             self._save_file(df_instrument, instrument)
     
     def _save_file(self, df: DataFrame, instrument: str) -> None:

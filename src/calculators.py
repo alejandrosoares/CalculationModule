@@ -5,6 +5,11 @@ from typing import Optional
 from pandas.core.series import Series
 from pandas.core.frame import DataFrame
 
+from settings import (
+    DF_COL_NAME,
+    DF_COL_DATE,
+    DF_COL_VALUE
+)
 from recorders import IFileDataRecorder
 from db_connectors import ISQLQueryManager
 from exceptions import InvalidInstrumentException
@@ -94,7 +99,7 @@ class CalculationEngine(ICalculationEngine):
         
         df = self._load_dataframe(instrument)
         df_sorted = self._sort_dataframe(df)
-        total = df_sorted['value'].head(items).sum()
+        total = df_sorted[DF_COL_VALUE].head(items).sum()
         return total
     
     def get_final_price_by_instrument_and_date(self, instrument: str, date: datetime) -> Optional[float]:
@@ -117,19 +122,19 @@ class CalculationEngine(ICalculationEngine):
         return df
 
     def _calculate_mean(self, df: DataFrame) -> float:
-        mean = df['value'].mean()
+        mean = df[DF_COL_VALUE].mean()
         return mean
     
     def _filter_by_instrument_and_date(self, df: DataFrame, instrument: str, date: datetime) -> Optional[Series]:
-        instrument = df[(df['instrument_name'] == instrument) & (df['date'] == date)]
+        instrument = df[(df[DF_COL_NAME] == instrument) & (df[DF_COL_DATE] == date)]
         if instrument.empty:
             return None
         return instrument.iloc[0]
     
     def _filter_by_period(self, df: DataFrame, start: datetime, end: datetime) -> DataFrame:
-        df_between_period = df[(df['date'] >= start) & (df['date'] <= end)]
+        df_between_period = df[(df[DF_COL_DATE] >= start) & (df[DF_COL_DATE] <= end)]
         return df_between_period
     
     def _sort_dataframe(self, df: DataFrame) -> DataFrame:
-        df_sorted = df.sort_values(by=['date'], ascending=False)
+        df_sorted = df.sort_values(by=[DF_COL_DATE], ascending=False)
         return df_sorted

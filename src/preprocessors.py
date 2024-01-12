@@ -2,7 +2,11 @@ from abc import ABC, abstractmethod
 
 import dask.dataframe as dd
 from dask.dataframe.core import DataFrame
-from settings import DATASET_DATE_FORMAT
+from settings import (
+    DATASET_DATE_FORMAT,
+    DF_COL_DATE,
+    DF_COL_WEEKDAY
+)
 
 
 __all__ = ['IPreprocessor', 'Preprocessor']
@@ -28,11 +32,11 @@ class Preprocessor:
         return df
 
     def _format_date(self, df: DataFrame) -> DataFrame:
-        df['date'] = dd.to_datetime(df['date'], format=DATASET_DATE_FORMAT)
+        df[DF_COL_DATE] = dd.to_datetime(df[DF_COL_DATE], format=DATASET_DATE_FORMAT)
         return df
     
     def _create_auxiliar_cols(self, df):
-        df['weekday'] = df['date'].dt.weekday
+        df[DF_COL_WEEKDAY] = df[DF_COL_DATE].dt.weekday
         return df
     
     def _remove_non_business_days(self, df: DataFrame) -> DataFrame:
@@ -42,5 +46,5 @@ class Preprocessor:
         return df
     
     def _remove_auxiliar_cols(self, df: DataFrame) -> DataFrame:
-        df = df.drop('weekday', axis=1)
+        df = df.drop(DF_COL_WEEKDAY, axis=1)
         return df
