@@ -18,28 +18,28 @@ For more information about configurations you can see the src/settings.py file.
 ## How it works
 A suitable solution was to split the large file into smaller files by instruments.
 
-Subsequent calculations can thus be accelerated because they are performed by instruments. At the same time, the total storage space can be reduced (by about 35%), since only the date and value can be stored into the datasets.
+subsequent calculations can be accelerated because they are carried out with smaller files. At the same time, the total storage space can be reduced (by about 35%), since only the date and value can be stored in the datasets.
 
 ![Schema](schema.png)
 
-1. The Loader class loads the file by chunck size and sends the chunk to the PreProcesor for formatting and cleaning. It also sends the chunk of data to the Recorder to perform calculations "on-the-fly".
-Finally, the Loader splits and saves files by instrument to speed up the calculation times.
+1. The **Loader** loads the file by chunk size and sends the chunk to the **PreProcesor** for formatting and cleaning. It also sends the chunk of data to the **Recorder** to perform calculations "on-the-fly".
+Finally, the **Loader** splits and saves files by instrument to speed up the time of future calculations.
 
-2. When the any operation is selected (for example: mean of any instrument), the Calculator class asks the FileLoader class for the data, and the FileLoader class loads the data of the instrument from a small file.
+2. When some operation is selected (for example: mean of any instrument), the **Calculator** asks the **FileLoader** for the data, and the **FileLoader** loads the data of the instrument from a small file.
 
-3. when any final price is necessary to calculate, the Calculator ask for the multiplier for the SQLQueryManager to retrieve the information from the database.
+3. When a final price is necessary to calculate, the **Calculator** asks for the multiplier to the **SQLQueryManager** to retrieve the information from the database.
 
 ## Features:
 
-1. To load and transform the original dataset, the DASK library was used for memory control and to allow parallel processing.
+1. To load and transform the original dataset, the **Dask** library was used for memory control and to allow parallel processing.
 
-2. However, the use of Dask increases the complexity, so Pandas was used to manipulate the datasets by instruments. Because the number of records is small. Approximately:
+2. However, the use of **Dask** increases the complexity, so **Pandas** was used to manipulate the smaller datasets. Because the number of records is small. Approximately:
 (newest year - oldest year) * record per day = (2014 - 1996) * 365 = 6570 records.
 
-3. To recover the multipliers from the database, the data was cached (with a timeout of 5 seconds) and an index was created by instrument name to speed up the queries.
+3. To retrieve the multipliers from the database, the data was cached (with a timeout of 5 seconds) and an index was created by instrument_name to speed up the queries.
 
 ## Installation
-1. Create the virtualenviroment and activate it:
+1. Create the virtual enviroment and activate it:
 ```
     python3 -m venv venv
 ```
@@ -61,7 +61,7 @@ sudo apt install sqlite3
 ```
 
 ## Test
-1. Once the virtualenvironment is activated, run:
+1. Once the virtual environment is activated, run:
 ```
     python3 -m unittest discover
 ```
