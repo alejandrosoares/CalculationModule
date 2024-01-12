@@ -12,4 +12,15 @@ DATASET_FILE_NAME = 'example_input.csv'
 DATASET_INSTRUMENTS_FOLDER = 'instruments'
 DATASET_INSTRUMENTS_DATE_FORMAT = '%Y-%m-%d'
 
-MEMORY_SIZE="100MB"
+DASK_MEMORY_SIZE="100MB"
+
+DF_COL_NAME = 'instrument_name'
+DF_COL_DATE = 'date'
+DF_COL_VALUE = 'value'
+DF_COL_WEEKDAY = 'weekday'
+DF_COLS = [
+    DF_COL_NAME,
+    DF_COL_DATE,
+    DF_COL_VALUE
+]
+

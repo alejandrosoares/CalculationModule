@@ -23,11 +23,10 @@ class TestFileLoader(unittest.TestCase):
         expected_file = os.path.join(get_dataset_instruments_path(), f'{instrument}.csv')
 
         with open(expected_file, 'w') as f:
-            f.write('instrument1,2022-01-01,10\n')
-            f.write('instrument1,2022-01-02,20\n')
+            f.write('2022-01-01,10\n')
+            f.write('2022-01-02,20\n')
 
         expected_df = pd.DataFrame({
-            'instrument_name': ['instrument1', 'instrument1'],
             'date': [Timestamp('2022-01-01'), Timestamp('2022-01-02')],
             'value': [10, 20]
         })
