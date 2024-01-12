@@ -110,12 +110,12 @@ class CalculationEngine(ICalculationEngine):
         If the multiplier does not exist in the database, it will be considered as 1.
         """
         df = self._load_dataframe(instrument)
-        instrument = self._filter_by_instrument_and_date(df, instrument, date)
-        if instrument is None:
+        _instrument = self._filter_by_date(df, date)
+        if _instrument is None:
             return None
 
-        multiplier = self.sql_handler.get_multiplier(instrument.instrument_name)
-        return instrument.value * multiplier
+        multiplier = self.sql_handler.get_multiplier(instrument)
+        return _instrument.value * multiplier
     
     def _load_dataframe(self, instrument: str) -> DataFrame:
         df = self.file_loader.load_instrument_dataframe(instrument)
@@ -125,8 +125,8 @@ class CalculationEngine(ICalculationEngine):
         mean = df[DF_COL_VALUE].mean()
         return mean
     
-    def _filter_by_instrument_and_date(self, df: DataFrame, instrument: str, date: datetime) -> Optional[Series]:
-        instrument = df[(df[DF_COL_NAME] == instrument) & (df[DF_COL_DATE] == date)]
+    def _filter_by_date(self, df: DataFrame, date: datetime) -> Optional[Series]:
+        instrument = df[df[DF_COL_DATE] == date]
         if instrument.empty:
             return None
         return instrument.iloc[0]

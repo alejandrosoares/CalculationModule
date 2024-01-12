@@ -6,7 +6,7 @@ from pandas.core.frame import DataFrame
 
 from settings import (
     DATASET_INSTRUMENTS_DATE_FORMAT, 
-    DF_COLS,
+    DF_CLEANED_COLS,
     DF_COL_DATE
 )
 from utils import get_dataset_instruments_path
@@ -32,7 +32,7 @@ class FileLoader:
     def load_instrument_dataframe(self, instrument: str) -> DataFrame:
         file = os.path.join(get_dataset_instruments_path(), f'{instrument}.csv')
         try:
-            df = pd.read_csv(file, header=None, names=DF_COLS)
+            df = pd.read_csv(file, header=None, names=DF_CLEANED_COLS)
         except FileNotFoundError:
             raise InstrumentDoesNotExistsException(
                 f'Instrument {instrument} does not exists in dataset.'

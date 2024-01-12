@@ -7,6 +7,7 @@ from settings import (
     DASK_MEMORY_SIZE,
     DF_COLS,
     DF_COL_NAME,
+    DF_CLEANED_COLS
 )
 from utils import get_dataset_instruments_path, get_full_dataset_path
 from preprocessors import IPreprocessor
@@ -60,7 +61,8 @@ class Loader:
             file,
             index=False, 
             header=False,
-            mode='at'
+            mode='at',
+            columns=DF_CLEANED_COLS
         )
 
     
