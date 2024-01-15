@@ -1,6 +1,6 @@
 from datetime import datetime
 
-from preprocessors import Preprocessor
+from cleaners import DataCleaner
 from recorders import FileDataRecorder
 from calculators import CalculationEngine
 from db_connectors import SQLQueryManager, SQLiteConnector
@@ -13,17 +13,14 @@ import time
 
 def main():
 
-    print('Converting data')
     converter = CsvToParquetConverter()
     converter.convert()
-    print('Converting finished')
-
 
     print('\nProcessing data...')
     start = time.time()
     data_recorder = FileDataRecorder()
-    preprocessor = Preprocessor()
-    processor = ParquetChunkProcessor(preprocessor, recorder=data_recorder)
+    cleaner = DataCleaner()
+    processor = ParquetChunkProcessor(cleaner, recorder=data_recorder)
     processor.init()
     end = time.time()
     print(f'\nProcessing finished. Time: {end - start} seconds')

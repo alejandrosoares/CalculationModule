@@ -4,11 +4,9 @@ import dask.dataframe as dd
 from settings import (
     DASK_MEMORY_SIZE,
     DF_COLS,
+    DATASET_DATE_FORMAT
 )
 from utils import get_full_dataset_path, get_converted_dataset_path
-
-
-from time import time
 
 
 __all__ = ['IFileExtensionConverter', 'CsvToParquetConverter']
@@ -31,7 +29,6 @@ class CsvToParquetConverter(IFileExtensionConverter):
         self.memory = memory
 
     def convert(self) -> None:
-        start = time()
         file = get_full_dataset_path()
         converted_file = get_converted_dataset_path()
         df = dd.read_csv(
@@ -40,6 +37,5 @@ class CsvToParquetConverter(IFileExtensionConverter):
             header=None,
             names=DF_COLS
         )
+        df['date'] = dd.to_datetime(df['date'], format=DATASET_DATE_FORMAT)
         df.to_parquet(converted_file)
-        end = time()
-        print(f'File converted. Time {end - start} seconds')

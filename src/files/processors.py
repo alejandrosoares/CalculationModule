@@ -1,4 +1,3 @@
-import os
 from abc import ABC, abstractmethod
 
 import dask.dataframe as dd
@@ -7,10 +6,11 @@ from dask.dataframe.core import DataFrame
 from settings import (
     DASK_MEMORY_SIZE,
     DF_COL_NAME,
+    DF_COLS,
     DF_CLEANED_COLS
 )
 from utils import get_full_instrument_path, get_converted_dataset_path
-from preprocessors import IPreprocessor
+from cleaners import IDataCleaner
 from recorders import IFileDataRecorder
 
 
@@ -27,17 +27,17 @@ class ParquetChunkProcessor(FileProcessor):
     and saves each instrument to a separated files in csv format.  
     """
     def __init__(self, 
-        preprocessor: IPreprocessor, 
+        cleaner: IDataCleaner, 
         memory: str = DASK_MEMORY_SIZE,
         recorder: IFileDataRecorder = None
     ):
         self.memory = memory
-        self.preprocessor = preprocessor
+        self.cleaner = cleaner
         self.recorder = recorder
 
     def init(self) -> None:
         df = self._read_file()
-        df = self.preprocessor.process(df)
+        df = self.cleaner.clean(df)
         self._record_data(df)
         self._save_by_instrument(df)
 
@@ -45,7 +45,9 @@ class ParquetChunkProcessor(FileProcessor):
         file = get_converted_dataset_path()
         df = dd.read_parquet(
             file,
-            blocksize=self.memory
+            blocksize=self.memory,
+            header=None,
+            names=DF_COLS
         )
         return df
 
