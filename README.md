@@ -65,3 +65,8 @@ sudo apt install sqlite3
 ```
     python3 -m unittest discover
 ```
+
+## Changelog
+| Date    | Code | Version | Description | Link |
+| -------- | ------- | -------- | ------- | -------
+| 15.01.24  | 01    | v1.1.0  | Conversion to parquet format before process the original dataset | [Link](docs/v1.1.0.md)
