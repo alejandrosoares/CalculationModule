@@ -4,25 +4,38 @@ from preprocessors import Preprocessor
 from recorders import FileDataRecorder
 from calculators import CalculationEngine
 from db_connectors import SQLQueryManager, SQLiteConnector
-from file_loaders import FileLoader
-from loaders import Loader
+from files.loaders import DataframeLoader
+from files.processors import ParquetChunkProcessor
+from files.converters import CsvToParquetConverter
 
 import time
 
 
 def main():
-    print('\nLoading data...')
+
+    print('Converting data')
+    converter = CsvToParquetConverter()
+    converter.convert()
+    print('Converting finished')
+
+
+    print('\nProcessing data...')
+    start = time.time()
     data_recorder = FileDataRecorder()
     preprocessor = Preprocessor()
-    loader = Loader(preprocessor, recorder=data_recorder)
-    loader.init()
+    processor = ParquetChunkProcessor(preprocessor, recorder=data_recorder)
+    processor.init()
+    end = time.time()
+    print(f'\nProcessing finished. Time: {end - start} seconds')
+
 
     print('\nLoading finished... Ready to use.')
     start = time.time()
     db = SQLiteConnector()
     sql_handler = SQLQueryManager(db)
-    file_loader = FileLoader()
-    calculator = CalculationEngine(sql_handler, file_loader, data_recorder)
+    dataframe_loader = DataframeLoader()
+    calculator = CalculationEngine(sql_handler, dataframe_loader, data_recorder)
+
 
     mean_instrument_one = calculator.get_mean_of_instrument()
     mean_two_between_dates = calculator.get_mean_of_instrument_between_dates()
