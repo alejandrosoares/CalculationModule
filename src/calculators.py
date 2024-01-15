@@ -6,14 +6,13 @@ from pandas.core.series import Series
 from pandas.core.frame import DataFrame
 
 from settings import (
-    DF_COL_NAME,
     DF_COL_DATE,
     DF_COL_VALUE
 )
 from recorders import IFileDataRecorder
 from db_connectors import ISQLQueryManager
 from exceptions import InvalidInstrumentException
-from file_loaders import IFileLoader
+from files.loaders import IDataframeLoader
 
 
 __all__ = ['ICalculationEngine', 'CalculationEngine']
@@ -59,11 +58,11 @@ class CalculationEngine(ICalculationEngine):
     """
     def __init__(self, 
         sql_handler: ISQLQueryManager,
-        file_loader: IFileLoader,
+        dataframe_loader: IDataframeLoader,
         data_recorder: IFileDataRecorder = None
     ):
         self.sql_handler = sql_handler
-        self.file_loader = file_loader
+        self.dataframe_loader = dataframe_loader
         self.data_recorder = data_recorder
 
     def get_mean_of_instrument(self, instrument: str = 'INSTRUMENT1') -> int:
@@ -118,7 +117,7 @@ class CalculationEngine(ICalculationEngine):
         return _instrument.value * multiplier
     
     def _load_dataframe(self, instrument: str) -> DataFrame:
-        df = self.file_loader.load_instrument_dataframe(instrument)
+        df = self.dataframe_loader.load_dataframe(instrument)
         return df
 
     def _calculate_mean(self, df: DataFrame) -> float:
