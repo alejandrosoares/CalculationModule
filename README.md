@@ -22,12 +22,14 @@ subsequent calculations can be accelerated because they are carried out with sma
 
 ![Schema](schema.png)
 
-1. The **Loader** loads the file by chunk size and sends the chunk to the **PreProcesor** for formatting and cleaning. It also sends the chunk of data to the **Recorder** to perform calculations "on-the-fly".
+1. The **Converter** converts the original file to parquet format.
+
+2. The **Loader** loads the file by chunk size and sends the chunk to the **PreProcesor** for formatting and cleaning. It also sends the chunk of data to the **Recorder** to perform calculations "on-the-fly".
 Finally, the **Loader** splits and saves files by instrument to speed up the time of future calculations.
 
-2. When some operation is selected (for example: mean of any instrument), the **Calculator** asks the **FileLoader** for the data, and the **FileLoader** loads the data of the instrument from a small file.
+3. When some operation is selected (for example: mean of any instrument), the **Calculator** asks the **FileLoader** for the data, and the **FileLoader** loads the data of the instrument from a small file.
 
-3. When a final price is necessary to calculate, the **Calculator** asks for the multiplier to the **SQLQueryManager** to retrieve the information from the database.
+4. When a final price is necessary to calculate, the **Calculator** asks for the multiplier to the **SQLQueryManager** to retrieve the information from the database.
 
 ## Features:
 
